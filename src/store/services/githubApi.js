@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const githubApi = createApi({
   reducerPath: "githubApi",
@@ -15,7 +15,7 @@ export const githubApi = createApi({
         `/search/repositories?q=${searchTerm}&sort=stars&order=desc`,
     }),
     getRepository: builder.query({
-      query: (fullname) => `repos/${fullname}`,
+      query: (fullName) => `/repos/${fullName}`,
     }),
   }),
 });
