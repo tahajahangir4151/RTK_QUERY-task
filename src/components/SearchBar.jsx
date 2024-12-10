@@ -3,12 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { githubApi } from "../store/services/githubApi";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const debouncedSearch = useDebounce(searchTerm, 300);
   const inputRef = useRef(null);
+  const navigate = useNavigate();
 
   const { data: searchResults } = githubApi.useSearchRepositoriesQuery(
     debouncedSearch,
@@ -23,16 +25,22 @@ const SearchBar = () => {
           setIsOpen(false);
         }
       };
-
-      document.addEventListener("mousedown", handleClickOutside());
+      document.addEventListener("mousedown", handleClickOutside);
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+  const handleRepoClick = (fullName) => {
+    setSearchTerm("");
+    setIsOpen(false);
+    navigate(`/repo/${fullName}`);
+  };
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
       <div className="relative">
         <input
+        ref={inputRef}
           type="text"
           value={searchTerm}
           onChange={(e) => {
@@ -66,6 +74,7 @@ const SearchBar = () => {
                   key={repo.id}
                   whileHover={{ backgroundColor: "rgba(59,130,246,0.1)" }}
                   className="cursor-pointer"
+                  onClick={()=>handleRepoClick(repo.full_name)}
                 >
                   <div className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
                     <div className="flex items-start">

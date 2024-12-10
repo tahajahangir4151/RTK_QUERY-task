@@ -17,7 +17,19 @@ export const githubApi = createApi({
     getRepository: builder.query({
       query: (fullName) => `/repos/${fullName}`,
     }),
+    getContents: builder.query({
+      query: ({ owner, repo, path = "" }) =>
+        `/repos/${owner}/${repo}/contents/${path}`,
+    }),
+    getFileContent: builder.query({
+      query: ({ owner, repo, path }) =>
+        `/repos/${owner}/${repo}/contents/${path}`,
+    }),
   }),
 });
 
-export const { useSearchRepositoriesQuery, useGetRepositoryQuery } = githubApi;
+export const {
+  useSearchRepositoriesQuery,
+  useGetRepositoryQuery,
+  useGetContentsQuery,
+} = githubApi;

@@ -6,6 +6,7 @@ import { Github, Moon, Sun } from "lucide-react";
 import { toggleTheme } from "./store/slices/themeSlice";
 import SearchBar from "./components/SearchBar";
 import Home from "./pages/Home";
+import RepoDetails from "./pages/RepoDetails";
 
 function AppContent() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -50,6 +51,7 @@ function AppContent() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/repo/:owner/:name/*" element={<RepoDetails />} />
         </Routes>
       </main>
     </div>
