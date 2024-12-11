@@ -25,6 +25,9 @@ export const githubApi = createApi({
       query: ({ owner, repo, path }) =>
         `/repos/${owner}/${repo}/contents/${path}`,
     }),
+    getLanguages: builder.query({
+      query: ({ owner, repo }) => `/repos/${owner}/${repo}/languages`,
+    }),
   }),
 });
 
@@ -32,4 +35,7 @@ export const {
   useSearchRepositoriesQuery,
   useGetRepositoryQuery,
   useGetContentsQuery,
+  useGetLanguagesQuery,
+  useGetFileContentQuery,
 } = githubApi;
+

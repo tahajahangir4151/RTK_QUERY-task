@@ -4,6 +4,8 @@ import { githubApi } from "../store/services/githubApi";
 import { motion } from "framer-motion";
 import FileExplorer from "../components/FileExplorer";
 import CodeViewer from "../components/CodeViewer";
+import LanguageStats from "../components/LanguageStats";
+import { getLanguageColor } from "../utils/languageColors";
 
 const RepoDetails = () => {
   const { owner, name } = useParams();
@@ -28,6 +30,13 @@ const RepoDetails = () => {
   );
   console.log(fileContent);
 
+  //Get Repo Lanugages
+  const { data: languages } = githubApi.useGetLanguagesQuery(
+    { owner, repo: name },
+    { skip: !owner || !name }
+  );
+  console.log(languages);
+
   const handleFileClick = (file) => {
     setSelectedFile(file);
   };
@@ -38,6 +47,18 @@ const RepoDetails = () => {
   };
 
   if (!repo || !contents) return null;
+
+  const languageStats = languages
+    ? Object.entries(languages)
+        .map(([name, bytes]) => ({
+          name,
+          percentage:
+            (bytes / Object.values(languages).reduce((a, b) => a + b, 0)) * 100,
+          color: getLanguageColor(name),
+        }))
+        .sort((a, b) => b.percentage - a.percentage)
+    : [];
+  console.log(languageStats);
 
   return (
     <motion.div
@@ -55,6 +76,12 @@ const RepoDetails = () => {
         </h1>
         <p className="text-gray-600 dark:text-gray-400">{repo.description}</p>
       </motion.div>
+
+      {languageStats.length > 0 && (
+        <div className="mb-8">
+          <LanguageStats languages={languageStats} />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <FileExplorer
